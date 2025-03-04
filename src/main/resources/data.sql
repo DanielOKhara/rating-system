@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX IF NOT EXISTS unique_lower_nickname ON user_schema.app_users (LOWER(nickname));
