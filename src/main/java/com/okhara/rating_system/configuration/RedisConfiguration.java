@@ -12,11 +12,13 @@ import org.springframework.data.redis.core.convert.KeyspaceConfiguration;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 
 import java.time.Duration;
-import java.util.Collections;
+import java.util.List;
 
 @Configuration
-@EnableRedisRepositories(keyspaceConfiguration = RedisConfiguration.RefreshTokenKeyspaceConfiguration.class,
-enableKeyspaceEvents = RedisKeyValueAdapter.EnableKeyspaceEvents.ON_STARTUP)
+@EnableRedisRepositories(
+        keyspaceConfiguration = RedisConfiguration.AppKeyspaceConfig.class,
+        enableKeyspaceEvents = RedisKeyValueAdapter.EnableKeyspaceEvents.ON_STARTUP
+)
 public class RedisConfiguration {
 
     @Value("${app.jwt.refreshTokenExpiration}")
@@ -32,16 +34,21 @@ public class RedisConfiguration {
         return new JedisConnectionFactory(configuration);
     }
 
-    public class RefreshTokenKeyspaceConfiguration extends KeyspaceConfiguration{
+    public class AppKeyspaceConfig extends KeyspaceConfiguration{
         private static final String REFRESH_TOKEN_KEYSPACE = "refresh_tokens";
+        private static final String VERIFICATION_CODE_KEYSPACE = "verification_codes";
 
         @Override
         protected Iterable<KeyspaceSettings> initialConfiguration(){
-            KeyspaceSettings keyspaceSettings = new KeyspaceSettings(RefreshToken.class, REFRESH_TOKEN_KEYSPACE);
+            KeyspaceSettings refreshTokenSettings = new KeyspaceSettings(RefreshToken.class, REFRESH_TOKEN_KEYSPACE);
+            refreshTokenSettings.setTimeToLive(refreshTokenExpiration.getSeconds());
 
-            keyspaceSettings.setTimeToLive(refreshTokenExpiration.getSeconds());
+            //todo: PRIORITY TASK!!!! без нее мануально не протестим и половины Т_Т
+            //todo: эксперимент провален Т_Т делай репозиторий и entity
+            KeyspaceSettings verificationCodeSettings = new KeyspaceSettings(String.class, VERIFICATION_CODE_KEYSPACE);
+            verificationCodeSettings.setTimeToLive(Duration.ofHours(24).getSeconds());
 
-            return Collections.singleton(keyspaceSettings);
+            return List.of(refreshTokenSettings, verificationCodeSettings);
         }
     }
 }

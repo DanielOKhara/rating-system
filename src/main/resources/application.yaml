@@ -4,6 +4,7 @@ spring:
       host: localhost
       port: 6379
   jpa:
+    open-in-view: false
     generate-ddl: true
     ddl-auto: update
   datasource:
@@ -17,12 +18,24 @@ spring:
   sql:
     init:
       mode: never
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: final.project.petrachkou@gmail.com
+    password: nijq twbu qusy vjzd
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 app:
   jwt:
     secret: "someSecretKey"
     tokenExpiration: 3m
     refreshTokenExpiration: 30m
+  domain: http://localhost:8080
 
 init:
-  enabled: false
+  enabled: true

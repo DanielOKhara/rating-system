@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Instant;
-import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -29,7 +28,6 @@ public class ApplicationInitializer {
 
     @Value("${init.enabled:true}")
     private boolean initEnabled;
-
 
     @PostConstruct
     public void initApp() {
@@ -50,7 +48,7 @@ public class ApplicationInitializer {
     }
 
     private void createAdminIfNotExists() {
-        Optional<AppUser> admin = userRepository.findByRoles(RoleType.ROLE_ADMIN);
+        Optional<AppUser> admin = userRepository.findByRolesContaining(RoleType.ROLE_ADMIN);
         if (admin.isEmpty()) {
             AppUser newAdmin = AppUser.builder()
                     .nickname("admin")
@@ -58,6 +56,7 @@ public class ApplicationInitializer {
                     .password("{bcrypt}$2a$10$uYfJ2EJ9FQ6WklBf/yCvde6GZm/eYJaXujHn1qIh69N7XQkZz9VoC") // "password"
                     .roles(Set.of(RoleType.ROLE_ADMIN))
                     .status(AccountStatus.ACTIVE)
+                    .emailVerified(true)
                     .createdAt(Instant.now())
                     .build();
             userRepository.save(newAdmin);

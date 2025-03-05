@@ -25,6 +25,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.text.MessageFormat;
@@ -42,8 +43,10 @@ public class AuthService {
     private final JwtUtils jwtUtils;
     private final RefreshTokenService refreshTokenService;
     private final EmailService emailService; // todo: реализовать e-mail сервис!
+    private final VerificationService verificationService;
 
 
+    @Transactional
     public void registerUser(RegisterSellerAccountRequest request) {
 
         String normalizedEmail = request.getEmail().toLowerCase();
@@ -79,7 +82,9 @@ public class AuthService {
 
         log.debug("User {} registered with rating {}", request.getNickname(), newUsersRating.getRating());
 
-        emailService.sendConfirmationEmail(newUser);
+        String verificationLink = verificationService.generateLink(newUser.getEmail());
+
+        emailService.sendVerificationEmail(newUser.getEmail(), verificationLink);
     }
 
     public AuthResponse authenticateUser(LoginRequest loginRequest){
@@ -120,6 +125,11 @@ public class AuthService {
 
                     return new RefreshTokenResponse(token, refreshTokenService.createRefreshToken(userId).getToken());
                 }).orElseThrow(() -> new RefreshTokenException(requestRefreshToken, "Refresh token not found"));
+    }
+
+    //todo подумай над логикой смены пароля... вроде как тут он норм будет
+    public void changePasswordRequest(){
+
     }
 
     public void logout(){

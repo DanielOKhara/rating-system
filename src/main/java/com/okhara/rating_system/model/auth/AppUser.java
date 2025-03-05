@@ -1,6 +1,5 @@
 package com.okhara.rating_system.model.auth;
 
-import com.okhara.rating_system.model.rating.Comment;
 import com.okhara.rating_system.model.rating.Rating;
 import jakarta.persistence.*;
 import lombok.*;
@@ -37,10 +36,6 @@ public class AppUser {
     @Builder.Default
     private Set<RoleType> roles = new HashSet<>();
 
-    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL)
-    @Builder.Default
-    private List<Comment> comments = new ArrayList<>();
-
     @OneToOne(cascade = CascadeType.ALL)
     private Rating rating;
 
@@ -51,4 +46,8 @@ public class AppUser {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private AccountStatus status;
+
+    @Column(name = "email_verified", nullable = false)
+    @Builder.Default
+    private boolean emailVerified = false;
 }

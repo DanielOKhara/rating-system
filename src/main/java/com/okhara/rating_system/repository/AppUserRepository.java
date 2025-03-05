@@ -20,7 +20,9 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long> {
     Optional<AppUser> findByNicknameAndRolesContainingAndStatusIn(String nickname, RoleType role,
                                                                   Set<AccountStatus> statuses);
 
-    Optional<AppUser> findByRoles(RoleType role);
+    Optional<AppUser> findByIdAndStatus(Long id, AccountStatus status);
+
+    Optional<AppUser> findByRolesContaining(RoleType role);
 
     Optional<AppUser> findByNickname(String nickname);
 

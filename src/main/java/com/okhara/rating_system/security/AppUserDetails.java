@@ -1,5 +1,6 @@
 package com.okhara.rating_system.security;
 
+import com.okhara.rating_system.model.auth.AccountStatus;
 import com.okhara.rating_system.model.auth.AppUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -55,6 +56,6 @@ public class AppUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.isEmailVerified() && user.getStatus() == AccountStatus.ACTIVE;
     }
 }
