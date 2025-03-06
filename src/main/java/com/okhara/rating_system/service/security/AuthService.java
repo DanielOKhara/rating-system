@@ -1,13 +1,14 @@
 package com.okhara.rating_system.service.security;
 
 import com.okhara.rating_system.exception.AlreadyExistsException;
+import com.okhara.rating_system.exception.EntityNotExistException;
 import com.okhara.rating_system.exception.RefreshTokenException;
 import com.okhara.rating_system.model.auth.AccountStatus;
 import com.okhara.rating_system.model.auth.AppUser;
 import com.okhara.rating_system.model.auth.RefreshToken;
 import com.okhara.rating_system.model.auth.RoleType;
 import com.okhara.rating_system.model.rating.Rating;
-import com.okhara.rating_system.repository.AppUserRepository;
+import com.okhara.rating_system.repository.jpa.AppUserRepository;
 import com.okhara.rating_system.security.AppUserDetails;
 import com.okhara.rating_system.security.jwt.JwtUtils;
 import com.okhara.rating_system.service.email.EmailService;
@@ -82,7 +83,7 @@ public class AuthService {
 
         log.debug("User {} registered with rating {}", request.getNickname(), newUsersRating.getRating());
 
-        String verificationLink = verificationService.generateLink(newUser.getEmail());
+        String verificationLink = verificationService.generateLink(newUser);
 
         emailService.sendVerificationEmail(newUser.getEmail(), verificationLink);
     }
@@ -139,5 +140,14 @@ public class AuthService {
 
             refreshTokenService.deleteByUserId(userId);
         }
+    }
+
+    public void verifyAccount(String code){
+        Long verifiedUserId = verificationService.verifyUserAndGetIdIfSuccess(code);
+        //todo: пересмотри логику... выглядит странно
+        AppUser verifiedUser = userRepository.findById(verifiedUserId).orElseThrow(()->
+                new EntityNotExistException("User doesn't exist"));
+        verifiedUser.setEmailVerified(true);
+        userRepository.save(verifiedUser);
     }
 }

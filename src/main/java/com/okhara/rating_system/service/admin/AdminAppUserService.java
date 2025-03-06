@@ -4,7 +4,8 @@ import com.okhara.rating_system.exception.EntityNotExistException;
 import com.okhara.rating_system.model.auth.AccountStatus;
 import com.okhara.rating_system.model.auth.AppUser;
 import com.okhara.rating_system.model.auth.RoleType;
-import com.okhara.rating_system.repository.AppUserRepository;
+import com.okhara.rating_system.repository.jpa.AppUserRepository;
+import com.okhara.rating_system.service.email.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,7 @@ import java.util.List;
 public class AdminAppUserService {
 
     private final AppUserRepository userRepository;
+    private final EmailService emailService;
 
     public List<AppUser> getAllPendingAccounts(){
         return userRepository.findByRolesContainingAndStatusIn(
@@ -31,7 +33,7 @@ public class AdminAppUserService {
         );
 
         sellerForActivate.setStatus(AccountStatus.ACTIVE);
-        //todo: мб после этого мы отправляем сообщение на e-mail?
+        emailService.sendConfirmationEmail(sellerForActivate);
 
         log.info("Seller {} id: {} registration success", sellerForActivate.getNickname(), sellerForActivate.getId());
         return userRepository.save(sellerForActivate);
@@ -42,6 +44,9 @@ public class AdminAppUserService {
                 () -> new EntityNotExistException("Account does not exist or already activated!")
         );
         userRepository.delete(sellerForActivate);
+
+        emailService.sendRejectionEmail(sellerForActivate);
+        log.info("Account {} deleted. ", sellerForActivate.getNickname());
     }
 
 

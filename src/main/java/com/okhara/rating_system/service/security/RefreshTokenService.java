@@ -2,7 +2,7 @@ package com.okhara.rating_system.service.security;
 
 import com.okhara.rating_system.exception.RefreshTokenException;
 import com.okhara.rating_system.model.auth.RefreshToken;
-import com.okhara.rating_system.repository.RefreshTokenRepository;
+import com.okhara.rating_system.repository.redis.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

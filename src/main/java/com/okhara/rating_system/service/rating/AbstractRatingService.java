@@ -1,7 +1,7 @@
 package com.okhara.rating_system.service.rating;
 
 import com.okhara.rating_system.model.auth.AppUser;
-import com.okhara.rating_system.repository.RatingRepository;
+import com.okhara.rating_system.repository.jpa.RatingRepository;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor

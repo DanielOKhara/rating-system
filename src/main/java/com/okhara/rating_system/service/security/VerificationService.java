@@ -1,40 +1,53 @@
 package com.okhara.rating_system.service.security;
 
+import com.okhara.rating_system.exception.VerificationException;
+import com.okhara.rating_system.model.auth.AppUser;
+import com.okhara.rating_system.model.auth.VerificationCode;
+import com.okhara.rating_system.repository.redis.VerificationCodeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 class VerificationService {
 
-    private final StringRedisTemplate redisTemplate;
+    @Value("${app.verification.verificationCodeExpiration}")
+    private Duration verificationCodeExpiration;
 
-    private static final String PREFIX = "verification_codes:";
+    private final VerificationCodeRepository codeRepository;
 
     @Value("${app.domain}")
     private String domainAddress;
 
-    String generateLink(String email) {
-        String key = PREFIX + email;
-        String verificationCode = String.valueOf(UUID.randomUUID());
-        redisTemplate.opsForValue().set(key, verificationCode);
-        return domainAddress + "/auth/verify?code=" + verificationCode;
+    String generateLink(AppUser user) {
+        String userCode = UUID.randomUUID().toString();
+        var verificationCode = VerificationCode.builder()
+                .userId(user.getId())
+                .expiryDate(Instant.now().plusMillis(verificationCodeExpiration.toMillis()))
+                .code(userCode)
+                .build();
+
+        codeRepository.save(verificationCode);
+        return domainAddress + "/auth/verify?code=" + userCode;
     }
 
-    void deleteCode(String email) {
-        redisTemplate.delete(PREFIX + email);
+    void deleteCode(Long userId) {
+        codeRepository.deleteByUserId(userId);
     }
 
-    boolean validateCode(String email, String code) {
-        String storedCode = getCode(email);
-        return storedCode != null && storedCode.equals(code);
+    Long verifyUserAndGetIdIfSuccess(String code) {
+        Optional<VerificationCode> verificationCode = codeRepository.findByCode(code);
+        if(verificationCode.isEmpty()){
+            throw new VerificationException("No responses to activate account or it's already activated");
+        }
+        codeRepository.delete(verificationCode.get());
+        return verificationCode.get().getUserId();
     }
 
-    String getCode(String email) {
-        return redisTemplate.opsForValue().get(PREFIX + email);
-    }
 }

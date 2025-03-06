@@ -2,7 +2,7 @@ package com.okhara.rating_system.service.security;
 
 
 import com.okhara.rating_system.model.auth.AppUser;
-import com.okhara.rating_system.repository.AppUserRepository;
+import com.okhara.rating_system.repository.jpa.AppUserRepository;
 import com.okhara.rating_system.security.AppUserDetails;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;

@@ -4,7 +4,7 @@ import com.okhara.rating_system.exception.EntityNotExistException;
 import com.okhara.rating_system.model.auth.AccountStatus;
 import com.okhara.rating_system.model.auth.AppUser;
 import com.okhara.rating_system.model.auth.RoleType;
-import com.okhara.rating_system.repository.AppUserRepository;
+import com.okhara.rating_system.repository.jpa.AppUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -3,7 +3,7 @@ package com.okhara.rating_system.service.open;
 import com.okhara.rating_system.exception.EntityNotExistException;
 import com.okhara.rating_system.model.rating.Comment;
 import com.okhara.rating_system.model.rating.CommentStatus;
-import com.okhara.rating_system.repository.CommentRepository;
+import com.okhara.rating_system.repository.jpa.CommentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

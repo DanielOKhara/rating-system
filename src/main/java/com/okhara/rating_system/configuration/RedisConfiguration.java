@@ -1,6 +1,7 @@
 package com.okhara.rating_system.configuration;
 
 import com.okhara.rating_system.model.auth.RefreshToken;
+import com.okhara.rating_system.model.auth.VerificationCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.context.annotation.Bean;
@@ -43,9 +44,9 @@ public class RedisConfiguration {
             KeyspaceSettings refreshTokenSettings = new KeyspaceSettings(RefreshToken.class, REFRESH_TOKEN_KEYSPACE);
             refreshTokenSettings.setTimeToLive(refreshTokenExpiration.getSeconds());
 
-            //todo: PRIORITY TASK!!!! без нее мануально не протестим и половины Т_Т
-            //todo: эксперимент провален Т_Т делай репозиторий и entity
-            KeyspaceSettings verificationCodeSettings = new KeyspaceSettings(String.class, VERIFICATION_CODE_KEYSPACE);
+            KeyspaceSettings verificationCodeSettings = new KeyspaceSettings(
+                    VerificationCode.class, VERIFICATION_CODE_KEYSPACE);
+            //todo: чекни как пойдет
             verificationCodeSettings.setTimeToLive(Duration.ofHours(24).getSeconds());
 
             return List.of(refreshTokenSettings, verificationCodeSettings);

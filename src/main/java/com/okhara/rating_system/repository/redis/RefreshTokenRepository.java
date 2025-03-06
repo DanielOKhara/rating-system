@@ -1,4 +1,4 @@
-package com.okhara.rating_system.repository;
+package com.okhara.rating_system.repository.redis;
 
 
 import com.okhara.rating_system.model.auth.RefreshToken;

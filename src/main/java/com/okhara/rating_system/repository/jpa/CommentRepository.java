@@ -1,6 +1,5 @@
-package com.okhara.rating_system.repository;
+package com.okhara.rating_system.repository.jpa;
 
-import com.okhara.rating_system.model.auth.AccountStatus;
 import com.okhara.rating_system.model.rating.Comment;
 import com.okhara.rating_system.model.rating.CommentStatus;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -32,9 +32,11 @@ spring:
 
 app:
   jwt:
-    secret: "someSecretKey"
-    tokenExpiration: 3m
-    refreshTokenExpiration: 30m
+    secret: "k6igPge1ktNzxgPrUl6K3kjDUy07AWSb5tILeosEvB85fRXpVilifb8fvyJniqlZvWeAmF135Q/Hsd24xCXVDQ=="
+    tokenExpiration: 60m
+    refreshTokenExpiration: 60m
+  verification:
+    verificationCodeExpiration: 24h
   domain: http://localhost:8080
 
 init:
