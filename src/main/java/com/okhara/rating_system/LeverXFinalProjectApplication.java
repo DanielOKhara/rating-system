@@ -12,6 +12,7 @@ public class LeverXFinalProjectApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(LeverXFinalProjectApplication.class, args);
+		System.out.println(org.springframework.web.method.ControllerAdviceBean.class.getProtectionDomain().getCodeSource());
 	}
 
 }

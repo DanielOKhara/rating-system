@@ -21,7 +21,6 @@ public class AppUser {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //todo Валидация в сервисе!
     @Column(unique = true, length = 16)
     private String nickname;
 
@@ -31,13 +30,14 @@ public class AppUser {
 
     @ElementCollection(targetClass = RoleType.class, fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
-    @Column(name = "roles", nullable = false)
+    @Column(name = "roles")
     @Enumerated(EnumType.STRING)
     @Builder.Default
     private Set<RoleType> roles = new HashSet<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
-    private Rating rating;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @Builder.Default
+    private Rating rating = null;
 
     @Column(name = "created_at")
     @CreationTimestamp
@@ -50,4 +50,13 @@ public class AppUser {
     @Column(name = "email_verified", nullable = false)
     @Builder.Default
     private boolean emailVerified = false;
+
+
+    @PrePersist
+    public void initRating() {
+        if (rating == null) {
+            rating = new Rating();
+            rating.setSeller(this);
+        }
+    }
 }

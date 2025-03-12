@@ -1,4 +1,4 @@
-package com.okhara.rating_system.web.dto.response;
+package com.okhara.rating_system.web.dto.response.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

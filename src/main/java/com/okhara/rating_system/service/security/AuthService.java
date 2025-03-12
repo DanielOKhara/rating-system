@@ -1,22 +1,22 @@
 package com.okhara.rating_system.service.security;
 
 import com.okhara.rating_system.exception.AlreadyExistsException;
+import com.okhara.rating_system.exception.CoordinationException;
 import com.okhara.rating_system.exception.EntityNotExistException;
 import com.okhara.rating_system.exception.RefreshTokenException;
 import com.okhara.rating_system.model.auth.AccountStatus;
 import com.okhara.rating_system.model.auth.AppUser;
 import com.okhara.rating_system.model.auth.RefreshToken;
 import com.okhara.rating_system.model.auth.RoleType;
-import com.okhara.rating_system.model.rating.Rating;
 import com.okhara.rating_system.repository.jpa.AppUserRepository;
 import com.okhara.rating_system.security.AppUserDetails;
 import com.okhara.rating_system.security.jwt.JwtUtils;
 import com.okhara.rating_system.service.email.EmailService;
-import com.okhara.rating_system.web.dto.request.LoginRequest;
-import com.okhara.rating_system.web.dto.request.RefreshTokenRequest;
-import com.okhara.rating_system.web.dto.request.RegisterSellerAccountRequest;
-import com.okhara.rating_system.web.dto.response.AuthResponse;
-import com.okhara.rating_system.web.dto.response.RefreshTokenResponse;
+import com.okhara.rating_system.web.dto.request.auth.LoginRequest;
+import com.okhara.rating_system.web.dto.request.auth.RefreshTokenRequest;
+import com.okhara.rating_system.web.dto.request.auth.RegisterSellerAccountRequest;
+import com.okhara.rating_system.web.dto.response.auth.AuthResponse;
+import com.okhara.rating_system.web.dto.response.auth.RefreshTokenResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,10 +28,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.text.MessageFormat;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -43,8 +43,9 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
     private final RefreshTokenService refreshTokenService;
-    private final EmailService emailService; // todo: реализовать e-mail сервис!
+    private final EmailService emailService;
     private final VerificationService verificationService;
+    private final ResetPasswordService resetPasswordService;
 
 
     @Transactional
@@ -71,17 +72,9 @@ public class AuthService {
                 .status(AccountStatus.PENDING)
                 .build();
 
-        Rating newUsersRating = Rating.builder()
-                .seller(newUser)
-                .rating(BigDecimal.ZERO)
-                .commentsCount(0L)
-                .sumOfGrades(0L)
-                .build();
-
-        newUser.setRating(newUsersRating);
         userRepository.save(newUser);
 
-        log.debug("User {} registered with rating {}", request.getNickname(), newUsersRating.getRating());
+        log.debug("User {} registered with rating {}", request.getNickname(), newUser.getRating());
 
         String verificationLink = verificationService.generateLink(newUser);
 
@@ -128,9 +121,35 @@ public class AuthService {
                 }).orElseThrow(() -> new RefreshTokenException(requestRefreshToken, "Refresh token not found"));
     }
 
-    //todo подумай над логикой смены пароля... вроде как тут он норм будет
-    public void changePasswordRequest(){
+    public void changePasswordRequest(String email){
+        AppUser appUser = userRepository.findByEmailAndStatusIn(email.toLowerCase(), Set.of(AccountStatus.ACTIVE))
+                .orElseThrow(() -> new EntityNotExistException(MessageFormat.format(
+                        "User with email \"{0}\" not exist", email
+                )));
 
+        String link = resetPasswordService.generateLink(appUser);
+        emailService.sendResetPasswordEmail(appUser.getEmail(), link);
+    }
+
+    @Transactional
+    public void changePassword(String code, String password){
+        Long userId = resetPasswordService.getUserIdIfActual(code);
+        AppUser user = userRepository.findByIdAndStatus(userId, AccountStatus.ACTIVE).orElseThrow(
+                () -> new EntityNotExistException("User not exist or not activated yet"));
+        String encodedNewPassword = passwordEncoder.encode(password);
+        if(passwordEncoder.matches(password, user.getPassword())){
+            throw new CoordinationException("New password and previous can't be same");
+        }
+
+        user.setPassword(encodedNewPassword);
+        userRepository.save(user);
+
+        resetPasswordService.deleteResetPasswordCode(userId);
+    }
+
+    public boolean isActiveResetCode(String code){
+        resetPasswordService.getUserIdIfActual(code);
+        return true;
     }
 
     public void logout(){
@@ -144,7 +163,7 @@ public class AuthService {
 
     public void verifyAccount(String code){
         Long verifiedUserId = verificationService.verifyUserAndGetIdIfSuccess(code);
-        //todo: пересмотри логику... выглядит странно
+
         AppUser verifiedUser = userRepository.findById(verifiedUserId).orElseThrow(()->
                 new EntityNotExistException("User doesn't exist"));
         verifiedUser.setEmailVerified(true);

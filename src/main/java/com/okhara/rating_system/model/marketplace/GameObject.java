@@ -28,13 +28,15 @@ public class GameObject {
     @JoinColumn(name = "seller_id", nullable = false)
     private AppUser seller;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "game_id", nullable = false)
     private Game game;
 
+    @Column(name = "created_at")
     @CreationTimestamp
     private Instant createdAt;
 
+    @Column(name = "updated_at")
     @UpdateTimestamp
     private Instant updatedAt;
 

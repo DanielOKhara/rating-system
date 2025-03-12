@@ -1,6 +1,7 @@
 package com.okhara.rating_system.configuration;
 
 import com.okhara.rating_system.model.auth.RefreshToken;
+import com.okhara.rating_system.model.auth.ResetPasswordCode;
 import com.okhara.rating_system.model.auth.VerificationCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
@@ -38,6 +39,8 @@ public class RedisConfiguration {
     public class AppKeyspaceConfig extends KeyspaceConfiguration{
         private static final String REFRESH_TOKEN_KEYSPACE = "refresh_tokens";
         private static final String VERIFICATION_CODE_KEYSPACE = "verification_codes";
+        private static final String RESET_PASSWORD_CODE_KEYSPACE = "reset_password_codes";
+
 
         @Override
         protected Iterable<KeyspaceSettings> initialConfiguration(){
@@ -46,10 +49,13 @@ public class RedisConfiguration {
 
             KeyspaceSettings verificationCodeSettings = new KeyspaceSettings(
                     VerificationCode.class, VERIFICATION_CODE_KEYSPACE);
-            //todo: чекни как пойдет
             verificationCodeSettings.setTimeToLive(Duration.ofHours(24).getSeconds());
 
-            return List.of(refreshTokenSettings, verificationCodeSettings);
+            KeyspaceSettings resetPasswordCodeSettings = new KeyspaceSettings(
+                    ResetPasswordCode.class, RESET_PASSWORD_CODE_KEYSPACE);
+            resetPasswordCodeSettings.setTimeToLive(Duration.ofMinutes(5).getSeconds());
+
+            return List.of(refreshTokenSettings, verificationCodeSettings, resetPasswordCodeSettings);
         }
     }
 }

@@ -3,6 +3,8 @@ package com.okhara.rating_system.repository.jpa;
 import com.okhara.rating_system.model.auth.AccountStatus;
 import com.okhara.rating_system.model.auth.AppUser;
 import com.okhara.rating_system.model.auth.RoleType;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,12 +15,20 @@ import java.util.Set;
 @Repository
 public interface AppUserRepository extends JpaRepository<AppUser, Long> {
 
-    List<AppUser> findByRolesContainingAndStatusIn(RoleType role, Set<AccountStatus> statuses);
+    List<AppUser> findAllByRolesContainingAndStatusIn(RoleType role,
+                                                      Set<AccountStatus> statuses,
+                                                      Pageable pageable);
 
     Optional<AppUser> findByIdAndRolesContainingAndStatusIn(Long id, RoleType role, Set<AccountStatus> statuses);
 
     Optional<AppUser> findByNicknameAndRolesContainingAndStatusIn(String nickname, RoleType role,
                                                                   Set<AccountStatus> statuses);
+
+    Optional<AppUser> findByEmailAndStatusIn(String email, Set<AccountStatus> statuses);
+
+    List<AppUser> findAllByRolesContainingAndStatusInAndEmailIsNotNull(RoleType role,
+                                                                       Set<AccountStatus> statuses,
+                                                                       Pageable pageable);
 
     Optional<AppUser> findByIdAndStatus(Long id, AccountStatus status);
 

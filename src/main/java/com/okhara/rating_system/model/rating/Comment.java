@@ -25,7 +25,7 @@ public class Comment {
     @Column(columnDefinition = "TEXT")
     private String message;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id", nullable = false)
     private AppUser seller;
 
@@ -34,9 +34,13 @@ public class Comment {
     private Byte grade;
 
     @CreationTimestamp
+    @Column(name = "created_at")
     private Instant createdAt;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private CommentStatus status;
+
+    @Column(name = "anonymous_token")
+    private String anonymousToken;
 }

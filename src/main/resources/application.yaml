@@ -37,6 +37,8 @@ app:
     refreshTokenExpiration: 60m
   verification:
     verificationCodeExpiration: 24h
+  password:
+    resetPasswordCodeExpiration: 5m
   domain: http://localhost:8080
 
 init:

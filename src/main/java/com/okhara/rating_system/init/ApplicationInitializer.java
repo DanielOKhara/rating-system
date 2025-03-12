@@ -85,7 +85,7 @@ public class ApplicationInitializer {
 
         List<Game> createdGames = DEFAULT_GAMES.stream()
                 .map(nameOfGame -> Game.builder()
-                        .name(nameOfGame)
+                        .title(nameOfGame)
                         .build()).toList();
         gameRepository.saveAll(createdGames);
         log.info("CS:GO, FIFA, Dota 2, Team Fortress - are added");

@@ -8,10 +8,11 @@ import com.okhara.rating_system.repository.jpa.AppUserRepository;
 import com.okhara.rating_system.service.email.EmailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -21,10 +22,10 @@ public class AdminAppUserService {
     private final AppUserRepository userRepository;
     private final EmailService emailService;
 
-    public List<AppUser> getAllPendingAccounts(){
-        return userRepository.findByRolesContainingAndStatusIn(
+    public List<AppUser> getAllPendingAccounts(Pageable pageable){
+        return userRepository.findAllByRolesContainingAndStatusInAndEmailIsNotNull(
                 RoleType.ROLE_SELLER,
-                EnumSet.of(AccountStatus.PENDING));
+                Set.of(AccountStatus.PENDING), pageable);
     }
 
     public AppUser activateSellersAccount(Long id){

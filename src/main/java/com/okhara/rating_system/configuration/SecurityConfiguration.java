@@ -55,11 +55,11 @@ public class SecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception{
-        httpSecurity.authorizeHttpRequests((auth) ->
-                auth.requestMatchers("/auth/**").permitAll()
-                    .requestMatchers(("/api/v1/app/**")).permitAll()
-                    .anyRequest().authenticated()
-        ).exceptionHandling(configurer -> configurer.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+        httpSecurity.authorizeHttpRequests((auth) -> auth
+                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/account/**").hasRole("SELLER")
+                        .anyRequest().permitAll()
+                ).exceptionHandling(configurer -> configurer.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(httpSecuritySessionManagementConfigurer ->

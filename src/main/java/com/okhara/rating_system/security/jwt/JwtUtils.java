@@ -3,10 +3,13 @@ package com.okhara.rating_system.security.jwt;
 
 import com.okhara.rating_system.security.AppUserDetails;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Date;
 
@@ -14,37 +17,49 @@ import java.util.Date;
 @Slf4j
 public class JwtUtils {
 
+    private final SecretKey secretKey;
+
     @Value("${app.jwt.secret}")
     private String jwtSecret;
 
     @Value("${app.jwt.tokenExpiration}")
     private Duration tokenExpiration;
 
+    public JwtUtils(@Value("${app.jwt.secret}") String jwtSecret){
+        this.secretKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+    }
+
     public String generateJwtToken(AppUserDetails userDetails){
         return generateTokenFromUsername(userDetails.getUsername());
     }
 
-    //Генерирует веб-токен на основании имени пользователя
     public String generateTokenFromUsername(String username) {
-        return Jwts.builder() //создает объект для построения jwt
-                .setSubject(username) //устанавливает субъект токена
-                .setIssuedAt(new Date()) //устанавливает время выдачи токена
-                .setExpiration(new Date(new Date().getTime() + tokenExpiration.toMillis())) //устанавливает время истечения
-                .signWith(SignatureAlgorithm.HS512, jwtSecret) // подписывает токен
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(new Date().getTime() + tokenExpiration.toMillis()))
+                .signWith(secretKey, SignatureAlgorithm.HS512)
                 .compact();
     }
 
     public String getUsername(String token){
-        return Jwts.parser().setSigningKey(jwtSecret)
-                .parseClaimsJws(token).getBody().getSubject(); // извлекает имя пользователя через jwt
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
     }
 
     public boolean validate(String authToken){
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(authToken);
+            Jwts.parserBuilder()
+                    .setSigningKey(secretKey)
+                    .build()
+                    .parseClaimsJws(authToken);
             return true;
-        } catch (SignatureException ex){
-            log.error("Invalid signature : {}", ex.getMessage());
+        } catch (SecurityException ex){
+            log.error("Invalid signature or encryption issue: {}", ex.getMessage());
         } catch (MalformedJwtException ex){
             log.error("Invalid token: {}", ex.getMessage());
         } catch (ExpiredJwtException ex){
