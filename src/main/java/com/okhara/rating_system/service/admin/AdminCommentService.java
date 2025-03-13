@@ -1,5 +1,6 @@
 package com.okhara.rating_system.service.admin;
 
+import com.okhara.rating_system.aop.AuditLoggable;
 import com.okhara.rating_system.exception.CoordinationException;
 import com.okhara.rating_system.exception.EntityNotExistException;
 import com.okhara.rating_system.model.auth.AccountStatus;
@@ -29,6 +30,7 @@ public class AdminCommentService {
                 pageable);
     }
 
+    @AuditLoggable
     @Transactional
     public void approveComment(Long commentId) {
         Comment commentForApprove = commentRepository.findByIdWithSeller(commentId).orElseThrow(() ->
@@ -43,6 +45,7 @@ public class AdminCommentService {
         commentForApprove.setStatus(CommentStatus.APPROVED);
     }
 
+    @AuditLoggable
     @Transactional
     public void rejectComment(Long commentId) {
         Comment commentForApprove = commentRepository.findByIdWithSeller(commentId).orElseThrow(() ->

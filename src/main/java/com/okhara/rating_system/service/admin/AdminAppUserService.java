@@ -1,5 +1,6 @@
 package com.okhara.rating_system.service.admin;
 
+import com.okhara.rating_system.aop.AuditLoggable;
 import com.okhara.rating_system.exception.EntityNotExistException;
 import com.okhara.rating_system.model.auth.AccountStatus;
 import com.okhara.rating_system.model.auth.AppUser;
@@ -28,6 +29,7 @@ public class AdminAppUserService {
                 Set.of(AccountStatus.PENDING), pageable);
     }
 
+    @AuditLoggable
     public AppUser activateSellersAccount(Long id){
         AppUser sellerForActivate = userRepository.findByIdAndStatus(id, AccountStatus.PENDING).orElseThrow(
                 () -> new EntityNotExistException("Account does not exist or already activated!")
@@ -40,6 +42,7 @@ public class AdminAppUserService {
         return userRepository.save(sellerForActivate);
     }
 
+    @AuditLoggable
     public void deactivatePendingAccount(Long id){
         AppUser sellerForActivate = userRepository.findByIdAndStatus(id, AccountStatus.PENDING).orElseThrow(
                 () -> new EntityNotExistException("Account does not exist or already activated!")
@@ -49,6 +52,4 @@ public class AdminAppUserService {
         emailService.sendRejectionEmail(sellerForActivate);
         log.info("Account {} deleted. ", sellerForActivate.getNickname());
     }
-
-
 }
