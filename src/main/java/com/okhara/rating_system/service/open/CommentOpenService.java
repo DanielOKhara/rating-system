@@ -63,6 +63,8 @@ public class CommentOpenService {
                 .roles(Set.of(RoleType.ROLE_SELLER))
                 .build();
         userRepository.save(placeholder);
+
+        comment.setStatus(CommentStatus.PENDING_WITH_PLACEHOLDER);
         comment.setSeller(placeholder);
         return commentRepository.save(comment);
     }

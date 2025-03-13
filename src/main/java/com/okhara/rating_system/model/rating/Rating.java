@@ -41,13 +41,13 @@ public class Rating {
         return BigDecimal.valueOf(sumOfGrades).divide(BigDecimal.valueOf(commentsCount), 2, RoundingMode.HALF_UP);
     }
 
-    public void addGrade(Byte grade) {
+    public void addGrade(Integer grade) {
         sumOfGrades += grade;
         commentsCount++;
         rating = calculateAverageRating();
     }
 
-    public void removeGrade(Byte grade) {
+    public void removeGrade(Integer grade) {
         sumOfGrades -= grade;
         commentsCount = Math.max(0, commentsCount - 1);
         rating = calculateAverageRating();

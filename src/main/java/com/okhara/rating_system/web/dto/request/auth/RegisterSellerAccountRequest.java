@@ -14,7 +14,7 @@ public class RegisterSellerAccountRequest {
 
     @NotBlank(message = "Nickname can't be empty!")
     @Size(min = 4, max = 16, message = "Nickname must be between 4 and 16 characters")
-    @Pattern(regexp = "^[a-zA-Z][a-zA-Z0-9_]$", message = "Only letters, numbers, and \"_\" are acceptable.")
+    @Pattern(regexp = "^[a-zA-Z][a-zA-Z0-9_]*$", message = "Only letters, numbers, and \"_\" are acceptable.")
     private String nickname;
 
     @NotBlank(message = "You can't create account without password!")

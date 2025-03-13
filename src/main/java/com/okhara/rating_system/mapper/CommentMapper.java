@@ -3,9 +3,7 @@ package com.okhara.rating_system.mapper;
 import com.okhara.rating_system.model.rating.Comment;
 import com.okhara.rating_system.model.rating.CommentStatus;
 import com.okhara.rating_system.web.dto.request.comment.SimpleCommentRequest;
-import com.okhara.rating_system.web.dto.response.comment.CommentResponse;
-import com.okhara.rating_system.web.dto.response.comment.CommentWithTokenResponse;
-import com.okhara.rating_system.web.dto.response.comment.CommentsListResponse;
+import com.okhara.rating_system.web.dto.response.comment.*;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -25,6 +23,23 @@ public class CommentMapper {
 
     public CommentResponse entityToResponse(Comment comment){
         return new CommentResponse(comment.getId(), comment.getGrade(), comment.getMessage(), comment.getCreatedAt());
+    }
+
+    public AdminCommentResponse entityToAdminResponse(Comment comment){
+        AdminCommentResponse response = new AdminCommentResponse();
+        response.setCommentId(comment.getId());
+        response.setStatus(comment.getStatus().toString());
+        response.setGrade(comment.getGrade());
+        response.setMessage(comment.getMessage());
+        response.setCommentedSellerId(comment.getSeller().getId());
+        response.setCreatedAt(comment.getCreatedAt());
+        return response;
+    }
+
+    public AdminCommentListResponse commentsListToAdminCommentListResponse(List<Comment> comments){
+        AdminCommentListResponse response = new AdminCommentListResponse();
+        response.setComments(comments.stream().map(this::entityToAdminResponse).toList());
+        return response;
     }
 
     public CommentWithTokenResponse entityToResponseWithToken(Comment comment){

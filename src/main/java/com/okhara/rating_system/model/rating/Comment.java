@@ -31,10 +31,9 @@ public class Comment {
 
     @Column(nullable = false)
     @Min(1) @Max(5)
-    private Byte grade;
+    private Integer grade;
 
     @CreationTimestamp
-    @Column(name = "created_at")
     private Instant createdAt;
 
     @Enumerated(EnumType.STRING)

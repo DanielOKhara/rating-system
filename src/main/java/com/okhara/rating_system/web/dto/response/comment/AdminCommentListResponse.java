@@ -4,18 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.Instant;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CommentResponse {
+public class AdminCommentListResponse {
 
-    private Long commentId;
-
-    private Integer grade;
-
-    private String message;
-
-    private Instant createdAt;
+    private List<AdminCommentResponse> comments;
 }

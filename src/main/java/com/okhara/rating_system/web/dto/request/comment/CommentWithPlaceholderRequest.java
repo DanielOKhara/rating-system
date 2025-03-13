@@ -14,7 +14,7 @@ public class CommentWithPlaceholderRequest extends SimpleCommentRequest {
     @Pattern(regexp = "^[a-zA-Z]\\w{3,15}$", message = "Only letters, numbers, and \"_\" are acceptable.")
     private String sellerNickname;
 
-    public CommentWithPlaceholderRequest(Byte grade,
+    public CommentWithPlaceholderRequest(Integer grade,
                                          String message,
                                          String sellerNickname) {
         super(grade, message);

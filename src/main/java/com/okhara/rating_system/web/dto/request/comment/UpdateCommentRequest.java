@@ -17,5 +17,5 @@ public class UpdateCommentRequest {
 
     @Min(value = 1, message = "Minimal grade is - 1")
     @Max(value = 5, message = "Maximal grade is - 5")
-    private Byte newGrade;
+    private Integer newGrade;
 }

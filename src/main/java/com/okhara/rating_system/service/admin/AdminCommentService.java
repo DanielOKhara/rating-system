@@ -56,6 +56,7 @@ public class AdminCommentService {
         commentRepository.delete(commentForApprove);
     }
 
+    //todo: глянь, оно вообще нужно?
 //    @Transactional
 //    public void deleteComment(Long commentId) {
 //        Comment commentToDelete = commentRepository.findByIdWithSeller(commentId).orElseThrow(() ->

@@ -4,6 +4,8 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
+import io.swagger.v3.oas.models.security.SecurityRequirement;
+import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,16 +30,28 @@ public class OpenApiConfiguration {
         contact.setEmail("upetrachkou@gmail.com");
         contact.setUrl("http://some.url");
 
-        License license = new License().name("GNU AGPLv3")
+        License license = new License()
+                .name("GNU AGPLv3")
                 .url("https://choosealicense.com/license/agpl-3.0/");
 
         Info info = new Info()
-                .title("Client-orders API")
+                .title("LeverX final project. Petrachkou")
                 .version("1.0")
                 .contact(contact)
-                .description("API for client orders")
+                .description("API selling-platform for game objects. Sellers rating-system")
                 .termsOfService("http://some.terms.url")
                 .license(license);
-        return new OpenAPI().info(info).servers(List.of(localhostServer, productionServer));
+
+        SecurityScheme securityScheme = new SecurityScheme()
+                .type(SecurityScheme.Type.HTTP)
+                .scheme("bearer")
+                .bearerFormat("JWT")
+                .name("BearerAuth");
+
+        return new OpenAPI()
+                .info(info)
+                .servers(List.of(localhostServer, productionServer))
+                .addSecurityItem(new SecurityRequirement().addList("BearerAuth"))
+                .schemaRequirement("BearerAuth", securityScheme);
     }
 }

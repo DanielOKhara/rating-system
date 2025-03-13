@@ -16,7 +16,7 @@ public class SimpleCommentRequest {
     @Min(value = 1, message = "Minimal grade is - 1")
     @Max(value = 5, message = "Maximal grade is - 5")
     @NotNull
-    private Byte grade;
+    private Integer grade;
 
     @NotBlank(message = "Please, write something!")
     private String message;

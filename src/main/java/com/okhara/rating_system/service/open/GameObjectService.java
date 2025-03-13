@@ -63,7 +63,7 @@ public class GameObjectService {
                 new EntityNotExistException(MessageFormat.format("Game object with id:{0} not exist",
                         gameObjectId)));
 
-        if(!updatingGameObject.getSeller().equals(currentUser)){
+        if(!updatingGameObject.getSeller().getId().equals(currentUser.getId())){
             throw new CoordinationException("Only creator can update game object!");
         }
 
@@ -82,7 +82,7 @@ public class GameObjectService {
                 new EntityNotExistException(MessageFormat.format("Game object with id:{0} not exist",
                         gameObjectId)));
 
-        boolean isOwner = deletingGameObject.getSeller().equals(currentUser);
+        boolean isOwner = deletingGameObject.getSeller().getId().equals(currentUser.getId());
         boolean isAdmin = currentUser.getRoles().contains(RoleType.ROLE_ADMIN);
 
         if(!isOwner && !isAdmin){

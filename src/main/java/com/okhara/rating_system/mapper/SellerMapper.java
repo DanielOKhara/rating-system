@@ -17,7 +17,7 @@ public class SellerMapper {
     public SellerResponse entityToResponse(AppUser user){
         return new SellerResponse(user.getId(),
                 user.getNickname(),
-                new RatingResponse(user.getRating().getRating(), user.getRating().getSumOfGrades()),
+                new RatingResponse(user.getRating().getRating(), user.getRating().getCommentsCount()),
                 createStatus(user.getStatus()),
                 getAccountAge(user.getCreatedAt()));
     }
