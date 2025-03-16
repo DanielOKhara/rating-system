@@ -15,13 +15,19 @@ public class AuditLoggingAspect {
 
     private final AuthenticationFacade authenticationFacade;
 
-    //todo: расширь функционал если успеешь
-
     @Before("@annotation(AuditLoggable)")
     public void logBefore(JoinPoint joinPoint){
         Object[] args = joinPoint.getArgs();
         String params = args.length > 0 ? " with params: " + java.util.Arrays.toString(args) : "";
         log.info("Admin \"{}\" execute {} method{}", authenticationFacade.getCurrentUser().getNickname(),
                 joinPoint.getSignature().getName(), params);
+    }
+
+    @AfterThrowing(pointcut = "@annotation(AuditLoggable)", throwing = "exception")
+    public void logException(JoinPoint joinPoint, Throwable exception) {
+        log.error("Admin \"{}\" failed to execute {} method. Error: {}",
+                authenticationFacade.getCurrentUser().getNickname(),
+                joinPoint.getSignature().getName(),
+                exception.getMessage());
     }
 }

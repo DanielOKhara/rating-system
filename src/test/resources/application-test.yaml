@@ -1,0 +1,37 @@
+spring:
+  jpa:
+    open-in-view: false
+    generate-ddl: true
+    ddl-auto: update
+  datasource:
+    url: jdbc:tc:postgresql:12.3:///testdb
+    username: test
+    password: test
+
+  sql:
+    init:
+      mode: never
+  mail:
+    host: localhost
+    port: 1025
+    username: test
+    password: test
+    properties:
+      mail:
+        smtp:
+          auth: false
+          starttls:
+            enable: false
+app:
+  jwt:
+    secret: "k6igPge1ktNzxgPrUl6K3kjDUy07AWSb5tILeosEvB85fRXpVilifb8fvyJniqlZvWeAmF135Q/Hsd24xCXVDQ=="
+    tokenExpiration: 5m
+    refreshTokenExpiration: 10m
+  verification:
+    verificationCodeExpiration: 1h
+  password:
+    resetPasswordCodeExpiration: 1m
+  domain: http://localhost:8082
+
+init:
+  enabled: false

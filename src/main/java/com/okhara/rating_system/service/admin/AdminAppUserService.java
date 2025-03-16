@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -30,6 +31,7 @@ public class AdminAppUserService {
     }
 
     @AuditLoggable
+    @Transactional
     public AppUser activateSellersAccount(Long id){
         AppUser sellerForActivate = userRepository.findByIdAndStatus(id, AccountStatus.PENDING).orElseThrow(
                 () -> new EntityNotExistException("Account does not exist or already activated!")
@@ -39,7 +41,10 @@ public class AdminAppUserService {
         emailService.sendConfirmationEmail(sellerForActivate);
 
         log.info("Seller {} id: {} registration success", sellerForActivate.getNickname(), sellerForActivate.getId());
-        return userRepository.save(sellerForActivate);
+
+        //todo: мануалом чекни - транзакция коммитится или лучше в ручную лупить
+        //return userRepository.save(sellerForActivate);
+        return sellerForActivate;
     }
 
     @AuditLoggable

@@ -12,7 +12,7 @@ import java.time.Instant;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "game_object")
+@Table(name = "game_object", schema = "user_schema")
 @Entity
 public class GameObject {
 

@@ -45,8 +45,15 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+
+
+	testImplementation("org.testcontainers:junit-jupiter:1.19.7")
+	testImplementation("org.testcontainers:postgresql:1.19.7")
+	testImplementation("com.github.tomakehurst:wiremock-jre8-standalone:2.35.0")
+	testImplementation("net.javacrumbs.json-unit:json-unit:2.38.0")
 }
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+	jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
 }

@@ -14,7 +14,7 @@ import java.util.*;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name = "app_users")
+@Table(name = "app_users", schema = "user_schema")
 public class AppUser {
 
     @Id

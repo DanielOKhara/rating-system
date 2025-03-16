@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-class ResetPasswordService {
+public class ResetPasswordService {
 
     @Value("${app.password.resetPasswordCodeExpiration}")
     private Duration resetPasswordCodeExpiration;
@@ -25,7 +25,7 @@ class ResetPasswordService {
     @Value("${app.domain}")
     private String domainAddress;
 
-    String generateLink(AppUser user) {
+    public String generateLink(AppUser user) {
         String resetPasswordCode = UUID.randomUUID().toString();
         var passwordResetCode = ResetPasswordCode.builder()
                 .userId(user.getId())
@@ -37,7 +37,7 @@ class ResetPasswordService {
         return domainAddress + "/auth/reset?code=" + resetPasswordCode;
     }
 
-    Long getUserIdIfActual(String code) {
+    public Long getUserIdIfActual(String code) {
         Optional<ResetPasswordCode> resetPasswordCode = resetPasswordCodeRepository.findByCode(code);
         if(resetPasswordCode.isEmpty()){
             throw new CoordinationException("Reset password code is not active!");

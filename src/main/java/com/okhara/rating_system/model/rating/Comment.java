@@ -14,7 +14,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "comments")
+@Table(name = "comments", schema = "user_schema")
 @Entity
 public class Comment {
 

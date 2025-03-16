@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-class VerificationService {
+public class VerificationService {
 
     @Value("${app.verification.verificationCodeExpiration}")
     private Duration verificationCodeExpiration;
@@ -25,7 +25,7 @@ class VerificationService {
     @Value("${app.domain}")
     private String domainAddress;
 
-    String generateLink(AppUser user) {
+    public String generateLink(AppUser user) {
         String userCode = UUID.randomUUID().toString();
         var verificationCode = VerificationCode.builder()
                 .userId(user.getId())
@@ -41,7 +41,7 @@ class VerificationService {
         codeRepository.deleteByUserId(userId);
     }
 
-    Long verifyUserAndGetIdIfSuccess(String code) {
+    public Long verifyUserAndGetIdIfSuccess(String code) {
         Optional<VerificationCode> verificationCode = codeRepository.findByCode(code);
         if(verificationCode.isEmpty()){
             throw new VerificationException("No responses to activate account or it's already activated");

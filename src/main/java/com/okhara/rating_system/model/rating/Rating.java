@@ -12,7 +12,7 @@ import java.math.RoundingMode;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name = "ratings")
+@Table(name = "ratings", schema = "user_schema")
 @Entity
 public class Rating {
 

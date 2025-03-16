@@ -4,7 +4,6 @@ import com.okhara.rating_system.aop.AuditLoggable;
 import com.okhara.rating_system.exception.CoordinationException;
 import com.okhara.rating_system.exception.EntityNotExistException;
 import com.okhara.rating_system.model.auth.AccountStatus;
-import com.okhara.rating_system.model.auth.AppUser;
 import com.okhara.rating_system.model.rating.Comment;
 import com.okhara.rating_system.model.rating.CommentStatus;
 import com.okhara.rating_system.repository.jpa.AppUserRepository;
@@ -58,17 +57,4 @@ public class AdminCommentService {
         }
         commentRepository.delete(commentForApprove);
     }
-
-    //todo: глянь, оно вообще нужно?
-//    @Transactional
-//    public void deleteComment(Long commentId) {
-//        Comment commentToDelete = commentRepository.findByIdWithSeller(commentId).orElseThrow(() ->
-//                new EntityNotExistException(MessageFormat.format("Comment with id {0} doesn't exist", commentId)));
-//
-//        AppUser user = commentToDelete.getSeller();
-//        user.getRating().removeGrade(commentToDelete.getGrade());
-//
-//        userRepository.save(user);
-//        commentRepository.deleteById(commentId);
-//    }
 }
