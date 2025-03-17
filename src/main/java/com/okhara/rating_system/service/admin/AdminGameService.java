@@ -4,8 +4,6 @@ import com.okhara.rating_system.aop.AuditLoggable;
 import com.okhara.rating_system.model.marketplace.Game;
 import com.okhara.rating_system.repository.jpa.GameRepository;
 import com.okhara.rating_system.web.dto.request.CreatingGameRequest;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
