@@ -1,0 +1,15 @@
+applications:
+  - name: leverx-final-project
+    memory: 1G
+    instances: 1
+    path: build/libs/rating-system-0.0.1-SNAPSHOT.jar
+    buildpacks:
+      - java_buildpack
+    services:
+      - postgresqlbtp
+      - redisbtp
+    env:
+      SPRING_PROFILES_ACTIVE: prod
+      MAIL_PASSWORD: nijq twbu qusy vjzd
+      APP_DOMAIN: ${vcap.application.uris[0]}
+      JWT_SECRET: "k6igPge1ktNzxgPrUl6K3kjDUy07AWSb5tILeosEvB85fRXpVilifb8fvyJniqlZvWeAmF135Q/Hsd24xCXVDQ=="
