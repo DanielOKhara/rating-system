@@ -10,6 +10,7 @@ import com.okhara.rating_system.web.dto.response.comment.CommentWithTokenRespons
 import com.okhara.rating_system.web.dto.response.comment.CommentsListResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -93,9 +94,15 @@ public class CommentOpenController {
     })
     @PutMapping("/{commentId}")
     public ResponseEntity<CommentResponse> updateComment(@PathVariable @NotNull @Positive Long commentId,
-                                                         @CookieValue(value = "anonymousTokens", required = false) String anonymousTokensJson,
+                                                         @CookieValue(value = "anonymousTokens", required = false)
+                                                         @Parameter(
+                                                                 name = "anonymousTokens",
+                                                                 in = ParameterIn.COOKIE,
+                                                                 description = "Anonymous token for identifying user session"
+                                                         )
+                                                         String anonymousTokens,
                                                          @RequestBody @Valid UpdateCommentRequest request){
-        Comment updatedComment = commentService.updateComment(commentId, anonymousTokensJson, request);
+        Comment updatedComment = commentService.updateComment(commentId, anonymousTokens, request);
         return ResponseEntity.ok(commentMapper.entityToResponse(updatedComment));
     }
 

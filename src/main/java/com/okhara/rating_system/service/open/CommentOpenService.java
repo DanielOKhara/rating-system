@@ -72,14 +72,11 @@ public class CommentOpenService {
     }
 
     @Transactional
-    public Comment updateComment(Long commentId, String anonymousTokensJson, UpdateCommentRequest request) {
+    public Comment updateComment(Long commentId, String anonymousToken, UpdateCommentRequest request) {
 
         Comment comment = commentRepository.findByIdWithSeller(commentId)
                 .orElseThrow(() -> new EntityNotExistException("Comment not found"));
 
-        Map<String, String> tokensMap = parseJsonToMap(anonymousTokensJson);
-
-        String anonymousToken = tokensMap.get(String.valueOf(commentId));
         if (!Objects.equals(anonymousToken, comment.getAnonymousToken())) {
             throw new CoordinationException("You are not the owner of this comment!");
         }
@@ -96,15 +93,12 @@ public class CommentOpenService {
     }
 
     @Transactional
-    public void deleteComment(Long commentId, String anonymousTokensJson) {
+    public void deleteComment(Long commentId, String anonymousToken) {
 
         Comment commentToDelete = commentRepository.findByIdWithSeller(commentId).orElseThrow(() ->
                 new EntityNotExistException(MessageFormat.format("Comment with id {0} doesn't exist", commentId)));
 
 
-        Map<String, String> tokensMap = parseJsonToMap(anonymousTokensJson);
-
-        String anonymousToken = tokensMap.get(String.valueOf(commentId));
         if (!Objects.equals(anonymousToken, commentToDelete.getAnonymousToken())) {
             throw new CoordinationException("You are not the owner of this comment!");
         }
@@ -117,15 +111,4 @@ public class CommentOpenService {
         userRepository.save(user);
     }
 
-    private Map<String, String> parseJsonToMap(String json) {
-        if (json == null || json.isBlank()) {
-            throw new CoordinationException("You have not commented yet!");
-        }
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(json, new TypeReference<>() {});
-        } catch (JsonProcessingException e) {
-            throw new CoordinationException("Invalid token format!");
-        }
-    }
 }

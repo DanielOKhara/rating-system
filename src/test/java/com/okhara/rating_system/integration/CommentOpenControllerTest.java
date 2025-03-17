@@ -128,12 +128,8 @@ public class CommentOpenControllerTest extends AbstractTest {
 
         UpdateCommentRequest request = new UpdateCommentRequest(updatedMessage, updatedGrade);
 
-        String anonymousTokensJson = objectMapper.writeValueAsString(
-                Map.of(commentId.toString(), existedComment.getAnonymousToken())
-        );
-
         mockMvc.perform(put("/sellers/1/comments/" + commentId)
-                        .cookie(new MockCookie("anonymousTokens", anonymousTokensJson)) // Передаём JSON-строку
+                        .cookie(new MockCookie("anonymousTokens", existedComment.getAnonymousToken()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -203,12 +199,8 @@ public class CommentOpenControllerTest extends AbstractTest {
         Comment existedComment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("Comment not found in test!"));
 
-        String anonymousTokensJson = objectMapper.writeValueAsString(
-                Map.of(commentId.toString(), existedComment.getAnonymousToken())
-        );
-
         mockMvc.perform(delete("/sellers/1/comments/" + commentId)
-                        .cookie(new MockCookie("anonymousTokens", anonymousTokensJson)))
+                        .cookie(new MockCookie("anonymousTokens", existedComment.getAnonymousToken())))
                 .andExpect(status().isNoContent());
     }
 

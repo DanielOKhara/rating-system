@@ -20,7 +20,7 @@ public class RegisterSellerAccountRequest {
     @NotBlank(message = "You can't create account without password!")
     @Pattern(
             regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[_\\-!():=])[a-zA-Zа-яА-Я0-9_\\-!():=]{6,}$",
-            message = "Password must contain at least one uppercase letter, one lowercase letter, and one special character (_-!():=)."
+            message = "Password (6+ symbols) must contain at least one uppercase letter, one lowercase letter, and one special character (_-!():=)."
     )
     private String password;
 

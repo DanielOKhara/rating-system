@@ -42,8 +42,6 @@ public class AdminAppUserService {
 
         log.info("Seller {} id: {} registration success", sellerForActivate.getNickname(), sellerForActivate.getId());
 
-        //todo: мануалом чекни - транзакция коммитится или лучше в ручную лупить
-        //return userRepository.save(sellerForActivate);
         return sellerForActivate;
     }
 

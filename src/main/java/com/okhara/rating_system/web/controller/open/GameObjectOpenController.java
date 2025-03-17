@@ -49,7 +49,7 @@ public class GameObjectOpenController {
                                                                 @RequestParam(defaultValue = "0") @PositiveOrZero int page) {
         return ResponseEntity.ok(gameObjectMapper.entityListToResponseList(
                 gameObjectService.findGameObjectsByGame(
-                        gameId, PageRequest.of(page, 15, Sort.by(Sort.Direction.DESC, "created_at")))));
+                        gameId, PageRequest.of(page, 15, Sort.by(Sort.Direction.DESC, "createdAt")))));
     }
 
     @Operation(
