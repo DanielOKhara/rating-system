@@ -22,7 +22,7 @@ public class OpenApiConfiguration {
         localhostServer.setDescription("Local env");
 
         Server productionServer = new Server();
-        productionServer.setUrl("http://some.prod.url");
+        productionServer.setUrl("https://leverx-final-petrachkou.cfapps.us10-001.hana.ondemand.com");
         productionServer.setDescription("Production env");
 
         Contact contact = new Contact();
