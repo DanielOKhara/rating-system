@@ -56,4 +56,5 @@ dependencies {
 tasks.withType<Test> {
 	useJUnitPlatform()
 	jvmArgs("--add-opens=java.base/java.util=ALL-UNNAMED")
+	systemProperty("spring.profiles.active", "dev")
 }
